@@ -1,5 +1,5 @@
 {
-  "name": "customerservice",
+  "name": "customer-service",
   "version": "1.0.0",
   "description": "Service responsible for managing hotel customers.",
   "author": "Luiz Ricardo Santos",
