@@ -2,7 +2,7 @@ module "sqs-payment" {
   source  = "terraform-aws-modules/sqs/aws"
   version = "4.2.0"
 
-  name = "hursthotel/paymentVouchers"
+  name = "paymentVouchers"
 
   fifo_queue = true
 
@@ -13,7 +13,7 @@ module "sqs-bookings" {
   source  = "terraform-aws-modules/sqs/aws"
   version = "4.2.0"
 
-  name = "hurstHotel/bookings"
+  name = "bookings"
 
   fifo_queue = true
 
