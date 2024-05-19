@@ -35,17 +35,17 @@ jobs:
           aws-region: us-east-1
 
       - name: Step 05 - Terraform Init
-        run: terraform -chdir=./aws init -input=false
+        run: terraform -chdir=./infrastructure init -input=false
 
       - name: Step 06 - Terraform Validate
-        run: terraform -chdir=./aws validate
+        run: terraform -chdir=./infrastructure validate
 
       - name: Step 07 - Terraform Plan
-        run: terraform -chdir=./aws plan -input=false -out tfplan
-        # run : terraform -chdir=./aws plan -input=false -destroy -out tfplan
+        run: terraform -chdir=./infrastructure plan -input=false -out tfplan
+        # run : terraform -chdir=./infrastructure plan -input=false -destroy -out tfplan
 
       - name: Step 08 - Terraform Apply
-        run: terraform -chdir=./aws apply -auto-approve -input=false tfplan
+        run: terraform -chdir=./infrastructure apply -auto-approve -input=false tfplan
 
       - name: Step 09 - Terraform Show
-        run: terraform -chdir=./aws show
+        run: terraform -chdir=./infrastructure show
