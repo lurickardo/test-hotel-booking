@@ -9,9 +9,6 @@ export class PaymentVoucher {
 	@ObjectIdColumn()
 	idBooking: ObjectId;
 
-	@Column({ type: "string", length: 8,nullable: false })
-	codeBookingInfo: string;
-
 	@Column({ type: "string", nullable: false })
 	fileUrl: string;
 }

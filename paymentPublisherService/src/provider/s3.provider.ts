@@ -8,7 +8,7 @@ import { env } from "../config";
 import * as path from "node:path";
 import { v4 as uuidv4 } from "uuid";
 
-const client = new S3Client({
+const s3Client = new S3Client({
 	region: env.providers.aws.region,
 	credentials: {
 		accessKeyId: env.providers.aws.accessKeyId,
@@ -39,7 +39,7 @@ export const s3Provider = {
 				Body: file.file,
 				ContentType: file.mimetype,
 			} as PutObjectCommandInput;
-			return await new Upload({ client, params }).done();
+			return await new Upload({ client: s3Client, params }).done();
 		} catch (error) {
 			throw error;
 		}
