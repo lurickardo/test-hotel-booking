@@ -16,6 +16,11 @@ type Env = {
 					folder: string;
 				};
 			};
+			sqs: {
+				urlQueues: {
+					paymentVoucher: string;
+				};
+			};
 		};
 	};
 };
@@ -50,6 +55,11 @@ export const env = Object.freeze({
 					folder: process.env.S3_FOLDER_PAYMENT_VOUCHER,
 				},
 			},
+			sqs: {
+				urlQueues: {
+					paymentVoucher: process.env.SQS_QUEUE_PAYMENT_VOUCHER,
+				}
+			}
 		},
 	},
 } as Env);

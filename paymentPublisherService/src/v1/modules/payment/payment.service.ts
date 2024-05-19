@@ -8,6 +8,7 @@ import * as httpStatus from "http-status";
 import { utils } from "../../../config/utils";
 import type { PaymentVoucher } from "../../../database/entities/paymentVoucher.entity";
 import { paymentVoucherRepository } from "../../../database/repositories/payment.repository";
+import { sqsProvider } from "../../../provider/sqs.provider";
 
 export const paymentService = {
 	uploadPaymentVoucher: async (
@@ -32,7 +33,7 @@ export const paymentService = {
 					httpStatus.BAD_REQUEST,
 				);
 
-			const paymentVoucherUrlFile = await s3Provider.uploadFile({
+			const paymentVoucherUploaded = await s3Provider.uploadFile({
 				file: uploadPaymentVoucherDto.paymentVoucher,
 				bucket: env.providers.aws.s3.paymentVoucher.bucket,
 				folder: env.providers.aws.s3.paymentVoucher.folder,
@@ -41,11 +42,21 @@ export const paymentService = {
 			const paymentVoucher: PaymentVoucher =
 				await paymentVoucherRepository.create({
 					idBooking: booking._id,
-					fileUrl: paymentVoucherUrlFile.Location,
-					codeBookingInfo: Math.floor(Math.random() * 100000000).toString(),
+					fileUrl: paymentVoucherUploaded.Location,
 				});
 
-			return paymentVoucher;
+			await sqsProvider.publish({
+				queueUrl: env.providers.aws.sqs.urlQueues.paymentVoucher,
+				queueType: "fifo",
+				deduplicationId: paymentVoucher._id.toString(),
+				messageBody: JSON.stringify({
+					idBooking: booking._id.toString(),
+				}),
+			});
+
+			return {
+				message: "Payment voucher uploaded successfully, booking PDF sent to your email.",
+			};
 		} catch (error) {
 			throw error;
 		}
