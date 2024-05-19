@@ -8,6 +8,9 @@ const repository = typeormDataSource.getRepository(
 
 export const paymentVoucherRepository = {
 	getRepository: repository,
+	findOneBy: async (criteria: FindOptionsWhere<PaymentVoucher>) => {
+		return await repository.findOneBy(criteria);
+	},
 	create: async (data: DeepPartial<PaymentVoucher>) => {
 		const paymentVoucher: PaymentVoucher = repository.create(data);
 		return await repository.save(paymentVoucher);

@@ -1,6 +1,6 @@
-const BookingStatus = {
+export const BookingStatus = {
 	PENDENTE: "pendente",
 	CONCLUIDO: "concluido",
 } as const;
 
-type BookingStatusType = keyof typeof BookingStatus;
+export type BookingStatusType = keyof typeof BookingStatus;
