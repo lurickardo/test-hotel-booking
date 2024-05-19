@@ -10,7 +10,7 @@ export const bookingSchema = {
 					type: "string",
 				},
 				vlBooking: {
-					type: "string",
+					type: "number",
 				},
 				dtCheckIn: {
 					type: "string",

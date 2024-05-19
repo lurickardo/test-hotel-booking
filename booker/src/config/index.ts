@@ -10,6 +10,11 @@ type Env = {
 			region: string;
 			accessKeyId: string;
 			secretAccessKey: string;
+			sqs: {
+				urlQueues: {
+					bookings: string;
+				};
+			};
 		};
 	};
 };
@@ -38,6 +43,11 @@ export const env = Object.freeze({
 			region: process.env.AWS_REGION,
 			accessKeyId: process.env.AWS_ACCESS_KEY_ID,
 			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+			sqs: {
+				urlQueues: {
+					bookings: process.env.SQS_QUEUE_BOOKINGS,
+				},
+			},
 		},
 	},
 } as Env);

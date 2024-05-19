@@ -1,12 +1,17 @@
 import { z } from "zod";
+import { utils } from "../../../../config/utils";
 
 const createBookingSchema = z.object({
 	customerEmail: z.string().email(),
 	customerName: z.string().min(10).max(45),
-	dtCheckIn: z.date(),
-	dtCheckOut: z.date(),
-	room: z.number().int().positive().min(1),
-	vlBooking: z.string(),
+	dtCheckIn: z
+		.string()
+		.transform((value) => utils.dateFormat(value, "dtCheckIn")),
+	dtCheckOut: z
+		.string()
+		.transform((value) => utils.dateFormat(value, "dtCheckOut")),
+	room: z.number().int().positive(),
+	vlBooking: z.number().positive().multipleOf(0.01),
 	paymentMethod: z.enum(["pix", "boleto", "saldo"]),
 });
 
