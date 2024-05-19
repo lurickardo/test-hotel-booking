@@ -11,7 +11,7 @@ const createBookingSchema = z.object({
 		.string()
 		.transform((value) => utils.dateFormat(value, "dtCheckOut")),
 	room: z.number().int().positive(),
-	vlBooking: z.number().positive().multipleOf(0.01),
+	vlBooking: z.number().positive(),
 	paymentMethod: z.enum(["pix", "boleto", "saldo"]),
 });
 
