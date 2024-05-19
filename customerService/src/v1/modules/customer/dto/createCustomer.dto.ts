@@ -3,13 +3,17 @@ import { customerRepository } from "../customer.repository";
 import { isUnique } from "../../../../config/validators/isUnique.validator";
 
 const createCustomerSchema = z.object({
-	name: z.string(),
+	name: z.string().max(45),
 	email: z
 		.string()
 		.email()
 		.refine(
 			async (value) => {
-				return !(await isUnique(customerRepository.getRepository, "email", value));
+				return !(await isUnique(
+					customerRepository.getRepository,
+					"email",
+					value,
+				));
 			},
 			{
 				message: "Field that must be unique is already registered.",
@@ -26,6 +30,8 @@ const createCustomerSchema = z.object({
 
 export type CreateCustomerDto = z.infer<typeof createCustomerSchema>;
 
-export const transformCreateCustomerDto = (data): Promise<CreateCustomerDto> => {
+export const transformCreateCustomerDto = (
+	data,
+): Promise<CreateCustomerDto> => {
 	return createCustomerSchema.parseAsync(data);
 };

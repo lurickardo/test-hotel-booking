@@ -1,30 +1,15 @@
 import type { ObjectId } from "mongodb";
-import { Entity, Column, BaseEntity, ObjectIdColumn } from "typeorm";
-
-const BookingStatus = {
-	PENDENTE: "pendente",
-	CONCLUIDO: "concluido",
-} as const;
-
-type BookingStatusType = keyof typeof BookingStatus;
-
-const PaymentMethod = {
-	PIX: "pendente",
-	BOLETO: "concluido",
-	SALDO: "saldo",
-} as const;
-
-type PaymentMethodType = keyof typeof PaymentMethod;
+import { Entity, Column, ObjectIdColumn } from "typeorm";
 
 @Entity("bookings")
 export class Booking {
 	@ObjectIdColumn({ name: "_id" })
 	_id: ObjectId;
 
-	@ObjectIdColumn()
-	customerId: ObjectId;
+	@Column({ type: "string" })
+	customerEmail: string;
 
-	@Column()
+	@Column({ type: "string" })
 	customerName: string;
 
 	@Column({ type: "decimal" })
@@ -44,7 +29,7 @@ export class Booking {
 		enum: PaymentMethod,
 		nullable: false,
 	})
-	paymentType: PaymentMethodType;
+	paymentMethod: PaymentMethodType;
 
 	@Column({
 		type: "enum",
