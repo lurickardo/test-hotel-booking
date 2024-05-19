@@ -6,7 +6,7 @@ const create = {
 	url: "/v1/booking",
 	schema: {
 		tags: ["v1"],
-		summary: "Create booking.",
+		summary: "Publish booking in queue to create.",
 		...bookingSchema.create,
 	},
 	handler: bookingController.create,
