@@ -31,7 +31,7 @@ module "sqs-notifications" {
   tags = local.tags
 }
 
-module "sqs-notifications" {
+module "sqs-bookingInfos" {
   source  = "terraform-aws-modules/sqs/aws"
   version = "4.2.0"
 
