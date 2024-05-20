@@ -9,6 +9,7 @@ import type { Message } from "@aws-sdk/client-sqs";
 import { env } from "../../../config";
 import { customerRepository } from "../../../database/repositories/customer.repository";
 import type { Customer } from "../../../database/entities/customer.entity";
+import type { Booking } from "../../../database/entities/booking.entity";
 
 const createBookingBalance = async (
 	createBookingDto: CreateBookingDto,
@@ -55,6 +56,20 @@ export const bookingService = {
 			);
 			return;
 		}
+
+		//TODO: check if there is already a reservation for that room for that date
+		const bookingsByRoom: Booking[] = await bookingRepository.find({
+			where: { room: createBookingDto.room },
+		});
+
+		const isConflict = bookingsByRoom.some((booking) => {
+			const startDate = new Date(createBookingDto.dtCheckIn);
+			const endDate = new Date(createBookingDto.dtCheckOut);
+			const bookingStartDate = new Date(booking.dtCheckIn);
+			const bookingEndDate = new Date(booking.dtCheckOut);
+
+			return startDate < bookingEndDate && endDate > bookingStartDate;
+		});
 
 		//TODO: add lock when creating a booking
 		if (createBookingDto.paymentMethod !== PaymentMethod.BALANCE) {
