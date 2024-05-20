@@ -23,16 +23,26 @@ const createBookingBalance = async (
 		(customer.balance - createBookingDto.vlBooking).toFixed(6),
 	);
 	if (newBalance < 0) {
-		// TODO: sends an email informing that the appointment was not made due to lack of balance
+		// TODO: sends an email informing that the balance is insufficient.
+		sqsProvider.deleteMessage({
+			queueUrl: env.providers.aws.sqs.urlQueues.bookings,
+			receiptHandle: message.ReceiptHandle,
+		});
+		process.stdout.write(
+			`\n\x1b[31m Booking ID:${message.MessageId} - customer: ${createBookingDto.customerName} the balance is insufficient.\x1b[0m\n`,
+		);
 		return;
 	}
 
-	await customerRepository.update(customer, { balance: newBalance });
-	// TODO: sends an email informing that the appointment was made successfully
-	await bookingRepository.create({
-		...createBookingDto,
-		status: "CONCLUDED",
-	});
+	Promise.all([
+		await customerRepository.update(customer, { balance: newBalance }),
+		await bookingRepository.create({
+			...createBookingDto,
+			status: "CONCLUDED",
+		}),
+		// TODO: sends an email informing that the appointment was made successfully
+	]);
+
 	sqsProvider.deleteMessage({
 		queueUrl: env.providers.aws.sqs.urlQueues.bookings,
 		receiptHandle: message.ReceiptHandle,
@@ -41,6 +51,25 @@ const createBookingBalance = async (
 		`\n\x1b[32m Booking with balance ID:${message.MessageId} done.\x1b[0m\n`,
 	);
 	return;
+};
+
+const isConflict = async (
+	createBookingDto: CreateBookingDto,
+): Promise<boolean> => {
+	const bookingsByRoom: Booking[] = await bookingRepository.find({
+		where: { room: createBookingDto.room },
+	});
+
+	const isConflict = bookingsByRoom.some((booking) => {
+		const startDate = new Date(createBookingDto.dtCheckIn);
+		const endDate = new Date(createBookingDto.dtCheckOut);
+		const bookingStartDate = new Date(booking.dtCheckIn);
+		const bookingEndDate = new Date(booking.dtCheckOut);
+
+		return startDate < bookingEndDate && endDate > bookingStartDate;
+	});
+
+	return isConflict;
 };
 
 export const bookingService = {
@@ -57,19 +86,17 @@ export const bookingService = {
 			return;
 		}
 
-		//TODO: check if there is already a reservation for that room for that date
-		const bookingsByRoom: Booking[] = await bookingRepository.find({
-			where: { room: createBookingDto.room },
-		});
-
-		const isConflict = bookingsByRoom.some((booking) => {
-			const startDate = new Date(createBookingDto.dtCheckIn);
-			const endDate = new Date(createBookingDto.dtCheckOut);
-			const bookingStartDate = new Date(booking.dtCheckIn);
-			const bookingEndDate = new Date(booking.dtCheckOut);
-
-			return startDate < bookingEndDate && endDate > bookingStartDate;
-		});
+		if (await isConflict(createBookingDto)) {
+			//TODO: send an email informing that the room has already been reserved for that date
+			sqsProvider.deleteMessage({
+				queueUrl: env.providers.aws.sqs.urlQueues.bookings,
+				receiptHandle: message.ReceiptHandle,
+			});
+			process.stdout.write(
+				`\n\x1b[31m Booking ID:${message.MessageId} has a date conflict.\x1b[0m\n`,
+			);
+			return;
+		}
 
 		//TODO: add lock when creating a booking
 		if (createBookingDto.paymentMethod !== PaymentMethod.BALANCE) {
