@@ -24,7 +24,7 @@ module "sqs-bookingNotifications" {
   source  = "terraform-aws-modules/sqs/aws"
   version = "4.2.0"
 
-  name = "notifications"
+  name = "bookingNotifications"
 
   fifo_queue = true
 
