@@ -5,7 +5,6 @@ import { env } from "./config";
 
 async function bootstrap(sqs: SQS): Promise<void> {
 	try {
-		//TODO: Make the service listen to the SQS queue all the time
 		if (!typeormDataSource.isInitialized)
 			typeormDataSource
 				.initialize()
