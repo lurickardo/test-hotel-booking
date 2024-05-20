@@ -1,0 +1,18 @@
+import type { DeepPartial, FindOptionsWhere, Repository } from "typeorm";
+import { typeormDataSource } from "../../database";
+import type { Booking } from "../../database/entities/booking.entity";
+
+const repository = typeormDataSource.getRepository(
+	"Booking",
+) as Repository<Booking>;
+
+export const bookingRepository = {
+	getRepository: repository,
+	findOneBy: async (criteria: FindOptionsWhere<Booking>) => {
+		return await repository.findOneBy(criteria);
+	},
+	create: async (data: DeepPartial<Booking>) => {
+		const booking: Booking = repository.create(data);
+		return await repository.save(booking);
+	},
+};

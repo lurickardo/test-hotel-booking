@@ -1,0 +1,32 @@
+{
+  "name": "skeleton",
+  "version": "1.0.0",
+  "description": "Generic software architecture framework in Node.js using Fastify, designed to provide a flexible and reusable foundation for application development.",
+  "author": "Luiz Ricardo Santos",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "start": "cls || clear && node -r ts-node/register --env-file=.env ./src/main.ts",
+    "start:dev": "cls || clear && ts-node-dev --respawn --transpile-only --env-file=.env ./src/main.ts",
+    "start:debug": "cls || clear && ts-node-dev --respawn --transpile-only --debug --env-file=.env ./src/main.ts",
+    "start:prod": "cls || clear && node --env-file=.env dist/src/main",
+    "lint": "npx @biomejs/biome format ./ --write",
+    "lint:check": "npx @biomejs/biome check ./src"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.577.0",
+    "@types/node": "^20.10.6",
+    "mongodb": "^6.6.2",
+    "typeorm": "^0.3.20",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.5.3",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,7 +1,7 @@
 export const PaymentMethod = {
-	PIX: "pendente",
-	BOLETO: "concluido",
-	SALDO: "saldo",
+	PIX: "PIX",
+	BOLETO: "BOLETO",
+	BALANCE: "BALANCE",
 } as const;
 
 export type PaymentMethodType = keyof typeof PaymentMethod;
