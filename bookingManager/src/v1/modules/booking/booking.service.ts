@@ -10,6 +10,7 @@ import { env } from "../../../config";
 import { customerRepository } from "../../../database/repositories/customer.repository";
 import type { Customer } from "../../../database/entities/customer.entity";
 import type { Booking } from "../../../database/entities/booking.entity";
+import { utils } from "../../../config/utils";
 
 const createBookingBalance = async (
 	createBookingDto: CreateBookingDto,
@@ -32,11 +33,9 @@ const createBookingBalance = async (
 				templateId: env.templateEmails.balanceInsufficient,
 			}),
 		});
-		sqsProvider.deleteMessage({
-			queueUrl: env.providers.aws.sqs.urlQueues.bookings,
-			receiptHandle: message.ReceiptHandle,
-		});
-		process.stdout.write(
+		utils.clearQueue(
+			env.providers.aws.sqs.urlQueues.bookings,
+			message,
 			`\n\x1b[31m Booking ID:${message.MessageId} - customer: ${createBookingDto.customerName} the balance is insufficient.\x1b[0m\n`,
 		);
 		return;
@@ -62,11 +61,9 @@ const createBookingBalance = async (
 			idBooking: booking._id,
 		}),
 	});
-	sqsProvider.deleteMessage({
-		queueUrl: env.providers.aws.sqs.urlQueues.bookings,
-		receiptHandle: message.ReceiptHandle,
-	});
-	process.stdout.write(
+	utils.clearQueue(
+		env.providers.aws.sqs.urlQueues.bookings,
+		message,
 		`\n\x1b[32m Booking with balance ID:${message.MessageId} done.\x1b[0m\n`,
 	);
 	return;
@@ -119,11 +116,9 @@ export const bookingService = {
 					templateId: env.templateEmails.roomConflict,
 				}),
 			});
-			sqsProvider.deleteMessage({
-				queueUrl: env.providers.aws.sqs.urlQueues.bookings,
-				receiptHandle: message.ReceiptHandle,
-			});
-			process.stdout.write(
+			utils.clearQueue(
+				env.providers.aws.sqs.urlQueues.bookings,
+				message,
 				`\n\x1b[31m Booking ID:${message.MessageId} has a date conflict.\x1b[0m\n`,
 			);
 			return;
@@ -134,11 +129,9 @@ export const bookingService = {
 				...createBookingDto,
 				status: "PENDING",
 			});
-			sqsProvider.deleteMessage({
-				queueUrl: env.providers.aws.sqs.urlQueues.bookings,
-				receiptHandle: message.ReceiptHandle,
-			});
-			process.stdout.write(
+			utils.clearQueue(
+				env.providers.aws.sqs.urlQueues.bookings,
+				message,
 				`\n\x1b[32m Booking ID:${message.MessageId} done. Waiting approval.\x1b[0m\n`,
 			);
 			return;
@@ -160,11 +153,9 @@ export const bookingService = {
 					templateId: env.templateEmails.customerNotFound,
 				}),
 			});
-			sqsProvider.deleteMessage({
-				queueUrl: env.providers.aws.sqs.urlQueues.bookings,
-				receiptHandle: message.ReceiptHandle,
-			});
-			process.stdout.write(
+			utils.clearQueue(
+				env.providers.aws.sqs.urlQueues.bookings,
+				message,
 				`\n\x1b[31m Booking ID:${message.MessageId} customer not found.\x1b[0m\n`,
 			);
 			return;

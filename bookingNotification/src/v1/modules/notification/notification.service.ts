@@ -24,11 +24,9 @@ const bookingNotApproved = async (
 		htmlBody: completeMessage,
 	});
 
-	sqsProvider.deleteMessage({
-		queueUrl: env.providers.aws.sqs.urlQueues.notifications,
-		receiptHandle: message.ReceiptHandle,
-	});
-	process.stdout.write(
+	utils.clearQueue(
+		env.providers.aws.sqs.urlQueues.notifications,
+		message,
 		`\n\x1b[32m Notification ID:${message.MessageId} not approved, sent.\x1b[0m\n`,
 	);
 };
@@ -48,11 +46,9 @@ export const notificationService = {
 		}
 
 		if (sendNotificationDto.idBooking) {
-			sqsProvider.deleteMessage({
-				queueUrl: env.providers.aws.sqs.urlQueues.notifications,
-				receiptHandle: message.ReceiptHandle,
-			});
-			process.stdout.write(
+			utils.clearQueue(
+				env.providers.aws.sqs.urlQueues.notifications,
+				message,
 				`\n\x1b[32m Success booking ${sendNotificationDto.idBooking}, notification ID:${message.MessageId} sent.\x1b[0m\n`,
 			);
 			return;
