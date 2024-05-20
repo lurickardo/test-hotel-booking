@@ -13,17 +13,25 @@ import type { Booking } from "../../../database/entities/booking.entity";
 
 const createBookingBalance = async (
 	createBookingDto: CreateBookingDto,
+	customer: Customer,
 	message: Message,
 ) => {
-	const customer: Customer = await customerRepository.findOneBy({
-		email: createBookingDto.customerEmail,
-	});
-
 	const newBalance = Number(
-		(customer.balance - createBookingDto.vlBooking).toFixed(6),
+		(customer?.balance - createBookingDto.vlBooking).toFixed(6),
 	);
+
 	if (newBalance < 0) {
-		// TODO: sends an email informing that the balance is insufficient.
+		await sqsProvider.publish({
+			queueUrl: env.providers.aws.sqs.urlQueues.bookingNotifications,
+			queueType: "fifo",
+			messageBody: JSON.stringify({
+				recipients: [createBookingDto.customerEmail],
+				content: {
+					customerName: createBookingDto.customerName,
+				},
+				templateId: env.templateEmails.balanceInsufficient,
+			}),
+		});
 		sqsProvider.deleteMessage({
 			queueUrl: env.providers.aws.sqs.urlQueues.bookings,
 			receiptHandle: message.ReceiptHandle,
@@ -34,15 +42,26 @@ const createBookingBalance = async (
 		return;
 	}
 
-	Promise.all([
-		await customerRepository.update(customer, { balance: newBalance }),
-		await bookingRepository.create({
+	const [booking] = await Promise.all([
+		bookingRepository.create({
 			...createBookingDto,
 			status: "CONCLUDED",
 		}),
-		// TODO: sends an email informing that the appointment was made successfully
+		customerRepository.update(customer, { balance: newBalance }),
 	]);
 
+	await sqsProvider.publish({
+		queueUrl: env.providers.aws.sqs.urlQueues.bookingNotifications,
+		queueType: "fifo",
+		messageBody: JSON.stringify({
+			recipients: [createBookingDto.customerEmail],
+			content: {
+				customerName: createBookingDto.customerName,
+			},
+			templateId: env.templateEmails.bookingSuccess,
+			idBooking: booking._id,
+		}),
+	});
 	sqsProvider.deleteMessage({
 		queueUrl: env.providers.aws.sqs.urlQueues.bookings,
 		receiptHandle: message.ReceiptHandle,
@@ -59,6 +78,8 @@ const isConflict = async (
 	const bookingsByRoom: Booking[] = await bookingRepository.find({
 		where: { room: createBookingDto.room },
 	});
+
+	if (bookingsByRoom.length === 0) return false;
 
 	const isConflict = bookingsByRoom.some((booking) => {
 		const startDate = new Date(createBookingDto.dtCheckIn);
@@ -87,7 +108,17 @@ export const bookingService = {
 		}
 
 		if (await isConflict(createBookingDto)) {
-			//TODO: send an email informing that the room has already been reserved for that date
+			sqsProvider.publish({
+				queueUrl: env.providers.aws.sqs.urlQueues.bookingNotifications,
+				queueType: "fifo",
+				messageBody: JSON.stringify({
+					recipients: [createBookingDto.customerEmail],
+					content: {
+						customerName: createBookingDto.customerName,
+					},
+					templateId: env.templateEmails.roomConflict,
+				}),
+			});
 			sqsProvider.deleteMessage({
 				queueUrl: env.providers.aws.sqs.urlQueues.bookings,
 				receiptHandle: message.ReceiptHandle,
@@ -98,7 +129,6 @@ export const bookingService = {
 			return;
 		}
 
-		//TODO: add lock when creating a booking
 		if (createBookingDto.paymentMethod !== PaymentMethod.BALANCE) {
 			await bookingRepository.create({
 				...createBookingDto,
@@ -114,6 +144,31 @@ export const bookingService = {
 			return;
 		}
 
-		await createBookingBalance(createBookingDto, message);
+		const customer: Customer = await customerRepository.findOneBy({
+			email: createBookingDto.customerEmail,
+		});
+
+		if (!customer) {
+			sqsProvider.publish({
+				queueUrl: env.providers.aws.sqs.urlQueues.bookingNotifications,
+				queueType: "fifo",
+				messageBody: JSON.stringify({
+					recipients: [createBookingDto.customerEmail],
+					content: {
+						customerName: createBookingDto.customerName,
+					},
+					templateId: env.templateEmails.customerNotFound,
+				}),
+			});
+			sqsProvider.deleteMessage({
+				queueUrl: env.providers.aws.sqs.urlQueues.bookings,
+				receiptHandle: message.ReceiptHandle,
+			});
+			process.stdout.write(
+				`\n\x1b[31m Booking ID:${message.MessageId} customer not found.\x1b[0m\n`,
+			);
+			return;
+		}
+		await createBookingBalance(createBookingDto, customer, message);
 	},
 };

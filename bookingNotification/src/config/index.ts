@@ -1,5 +1,9 @@
+import * as application from "../../package.json";
+
 type Env = {
 	app: { environment: string; delay: number };
+	plugins: { swagger: { basePath: string } };
+	stripPrefix: { path: string };
 	db: { name: "mongodb"; url: string };
 	providers: {
 		aws: {
@@ -8,17 +12,13 @@ type Env = {
 			secretAccessKey: string;
 			sqs: {
 				urlQueues: {
-					bookings: string;
-					bookingNotifications: string;
+					notifications: string;
 				};
 			};
+			ses: {
+				fromEmailAddress: string;
+			};
 		};
-	};
-	templateEmails: {
-		bookingSuccess: string;
-		balanceInsufficient: string;
-		roomConflict: string;
-		customerNotFound: string;
 	};
 };
 
@@ -26,6 +26,16 @@ export const env = Object.freeze({
 	app: {
 		environment: process.env.APP_ENVIRONMENT,
 		delay: Number.parseInt(process.env.APP_DELAY) || 3000,
+	},
+	plugins: {
+		swagger: {
+			basePath: Object.is(process.env.USE_ROUTE_PREFIX, "true")
+				? `/api/${application.name.replace(/-/g, "")}/`
+				: "/",
+		},
+	},
+	stripPrefix: {
+		path: `/api/${application.name.replace(/-/g, "")}`,
 	},
 	db: {
 		name: process.env.DB_NAME,
@@ -38,16 +48,12 @@ export const env = Object.freeze({
 			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 			sqs: {
 				urlQueues: {
-					bookings: process.env.SQS_QUEUE_BOOKINGS,
-					bookingNotifications: process.env.SQS_QUEUE_BOOKING_NOTIFICATIONS,
+					notifications: process.env.SQS_QUEUE_BOOKING_NOTIFICATIONS,
 				},
 			},
+			ses: {
+				fromEmailAddress: process.env.SES_FROM_EMAIL_ADDRESS,
+			},
 		},
-	},
-	templateEmails: {
-		bookingSuccess: process.env.TEMPLATE_EMAIL_BOOKING_SUCCESS,
-		balanceInsufficient: process.env.TEMPLATE_EMAIL_BALANCE_INSUFFICIENT,
-		roomConflict: process.env.TEMPLATE_EMAIL_ROOM_CONFLICT,
-		customerNotFound: process.env.TEMPLATE_EMAIL_CUSTOMER_NOT_FOUND,
 	},
 } as Env);
