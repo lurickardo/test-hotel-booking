@@ -15,7 +15,16 @@ export const customerRepository = {
 	findOneBy: async (criteria: FindOptionsWhere<Customer>) => {
 		return await repository.findOneBy(criteria);
 	},
-	update: async (existing: Customer, updated: Partial<Customer>) => {
-		return await repository.save({ ...existing, ...updated });
+
+	update: async (customer: Customer, updateData: Partial<Customer>) => {
+		const existingCustomer = await repository.findOneBy({
+			_id: customer._id,
+		});
+
+		if (existingCustomer.version + 1 !== updateData.version) {
+			throw new Error("Optimistic lock error: Version mismatch");
+		}
+
+		return repository.save({ ...existingCustomer, ...updateData });
 	},
 };

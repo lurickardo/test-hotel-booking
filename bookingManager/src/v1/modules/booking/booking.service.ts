@@ -49,7 +49,7 @@ const createBookingBalance = async (
 			}),
 			customerRepository.update(customer, {
 				balance: newBalance,
-				version: customer.version,
+				version: customer.version + 1,
 			}),
 		]);
 

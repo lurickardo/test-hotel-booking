@@ -29,11 +29,22 @@ export const customerService = {
 			if (!customer)
 				throw httpException("Customer not found.", HttpStatus.NOT_FOUND);
 
-			const updateCustomer = await customerRepository.update(customer, {
-				balance: Number((customer.balance + balanceDto.amount).toFixed(6)),
+			const newBalance = Number(
+				(customer.balance + balanceDto.amount).toFixed(6),
+			);
+
+			const updatedCustomer = await customerRepository.update(customer, {
+				balance: newBalance,
+				version: customer.version + 1,
 			});
-			return { email, balance: updateCustomer.balance };
+
+			return { email, balance: updatedCustomer.balance };
 		} catch (error) {
+			if (error.message === "Optimistic lock error: Version mismatch")
+				throw httpException(
+					"Concurrent update error. Please try again.",
+					HttpStatus.CONFLICT,
+				);
 			throw error;
 		}
 	},
