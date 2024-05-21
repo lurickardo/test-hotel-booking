@@ -18,6 +18,10 @@
 
 Hotel Booking is a microservices system designed to book a stay at a hotel.
 
+## Comments
+
+The ideal would be for each service to be a lambda, and SQS would trigger the lambdas according to the messages arriving. Due to time, I was unable to develop this part. Unfortunately it was also not possible to do unit testing.
+
 ## Diagram
 <a href="https://miro.com/app/board/uXjVKGOoZpw=/?share_link_id=530227404362">Diagram Link</a>
 <a href="https://miro.com/app/board/uXjVKGOoZpw=/?share_link_id=530227404362" target="_blank"><img src="https://github.com/lurickardo/test-hotel-booking/assets/34722198/8e3df416-ce78-43b7-9dcb-c09332459890" alt="Flow" /></a>
