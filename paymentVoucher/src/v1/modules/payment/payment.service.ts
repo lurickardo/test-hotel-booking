@@ -46,16 +46,18 @@ export const paymentService = {
 				});
 
 			await sqsProvider.publish({
-				queueUrl: env.providers.aws.sqs.urlQueues.paymentVoucher,
+				queueUrl: env.providers.aws.sqs.urlQueues.bookingNotifications,
 				queueType: "fifo",
 				deduplicationId: paymentVoucher._id.toString(),
 				messageBody: JSON.stringify({
 					idBooking: booking._id.toString(),
+					templateId: env.providers.aws.ses.templates.bookingAproved,
 				}),
 			});
 
 			return {
-				message: "Payment voucher uploaded successfully, booking PDF sent to your email.",
+				message:
+					"Payment voucher uploaded successfully, booking PDF sent to your email.",
 			};
 		} catch (error) {
 			throw error;

@@ -15,12 +15,12 @@ export const utils = {
 	clearQueue: async (
 		queueUrl: string,
 		queueMessage: Message,
-		message: string,
+		message?: string,
 	): Promise<void> => {
 		sqsProvider.deleteMessage({
 			queueUrl: queueUrl,
 			receiptHandle: queueMessage.ReceiptHandle,
 		});
-		process.stdout.write(message);
+		message && process.stdout.write(message);
 	},
 };

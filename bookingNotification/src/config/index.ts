@@ -13,10 +13,17 @@ type Env = {
 			sqs: {
 				urlQueues: {
 					notifications: string;
+					paymentVouchers: string;
 				};
 			};
 			ses: {
 				fromEmailAddress: string;
+			};
+			s3: {
+				bookingInfo: {
+					bucket: string;
+					folder: string;
+				};
 			};
 		};
 	};
@@ -49,10 +56,17 @@ export const env = Object.freeze({
 			sqs: {
 				urlQueues: {
 					notifications: process.env.SQS_QUEUE_BOOKING_NOTIFICATIONS,
+					paymentVouchers: process.env.SQS_QUEUE_PAYMENT_VOUCHERS,
 				},
 			},
 			ses: {
 				fromEmailAddress: process.env.SES_FROM_EMAIL_ADDRESS,
+			},
+			s3: {
+				bookingInfo: {
+					bucket: process.env.S3_BUCKET_BOOKING_INFO,
+					folder: process.env.S3_FOLDER_BOOKING_INFO,
+				},
 			},
 		},
 	},

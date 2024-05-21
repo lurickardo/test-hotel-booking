@@ -1,15 +1,15 @@
 import { type SafeParseReturnType, z } from "zod";
 
 const sendNotificationSchema = z.object({
-	recipients: z.array(z.string()).min(1),
-	content: z.any(),
+	recipients: z.array(z.string()).min(1).optional(),
+	content: z.any().optional(),
 	templateId: z.string().min(23),
 	idBooking: z.string().min(23).optional(),
 });
 
 export type SendNotificationDto = {
-	recipients: string[];
-	content: any;
+	recipients?: string[];
+	content?: any;
 	templateId: string;
 	idBooking: string;
 };

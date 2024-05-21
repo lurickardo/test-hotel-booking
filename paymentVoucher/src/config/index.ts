@@ -18,7 +18,12 @@ type Env = {
 			};
 			sqs: {
 				urlQueues: {
-					paymentVoucher: string;
+					bookingNotifications: string;
+				};
+			};
+			ses: {
+				templates: {
+					bookingAproved: string;
 				};
 			};
 		};
@@ -57,9 +62,14 @@ export const env = Object.freeze({
 			},
 			sqs: {
 				urlQueues: {
-					paymentVoucher: process.env.SQS_QUEUE_PAYMENT_VOUCHER,
-				}
-			}
+					bookingNotifications: process.env.SQS_QUEUE_BOOKING_NOTIFICATIONS,
+				},
+			},
+			ses: {
+				templates: {
+					bookingAproved: process.env.SES_TEMPLATE_BOOKING_APROVED,
+				},
+			},
 		},
 	},
 } as Env);

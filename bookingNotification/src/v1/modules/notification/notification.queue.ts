@@ -10,4 +10,10 @@ export const notificationQueues: Queue[] = [
 		validate: validateSendNotificationDto,
 		options: { durable: true },
 	},
+	{
+		queueUrl: env.providers.aws.sqs.urlQueues.paymentVouchers,
+		service: notificationService.sendNotification,
+		validate: validateSendNotificationDto,
+		options: { durable: true },
+	},
 ];

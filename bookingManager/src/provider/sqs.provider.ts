@@ -5,7 +5,7 @@ import {
 	type DeleteMessageCommandOutput,
 	type SendMessageCommandOutput,
 } from "@aws-sdk/client-sqs";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "node:crypto";
 import { env } from "../config";
 
 export const QueueType = {
@@ -41,7 +41,7 @@ export const sqsProvider = {
 		queueUrl,
 		queueType = QueueType.standard,
 		delay = 10,
-		deduplicationId = uuidv4(),
+		deduplicationId = randomUUID(),
 		messageBody,
 	}: PublishSQS): Promise<SendMessageCommandOutput> => {
 		try {

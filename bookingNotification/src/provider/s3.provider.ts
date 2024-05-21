@@ -21,6 +21,7 @@ interface UploadFile {
 	bucket: string;
 	folder: string;
 	key?: string;
+	extension?: "pdf";
 }
 
 export const s3Provider = {
@@ -28,13 +29,14 @@ export const s3Provider = {
 		file,
 		bucket,
 		folder,
+		extension = "pdf",
 	}: UploadFile): Promise<CompleteMultipartUploadCommandOutput> => {
 		try {
 			const params = {
 				Bucket: bucket,
 				Key: path.join(
 					folder,
-					`${randomUUID().replace(/-/g, "")}.${file.filename.split(".").pop()}`,
+					`${randomUUID().replace(/-/g, "")}.${extension}`,
 				),
 				Body: file.file,
 				ContentType: file.mimetype,
