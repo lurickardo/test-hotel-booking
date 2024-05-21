@@ -1,4 +1,5 @@
 import type { Message } from "@aws-sdk/client-sqs";
+import { sqsProvider } from "../provider/sqs.provider";
 
 export const utils = {
 	bufferToObject: (buffer: any): any => {
@@ -10,5 +11,16 @@ export const utils = {
 			return false;
 		}
 		return date.toISOString();
+	},
+	clearQueue: async (
+		queueUrl: string,
+		queueMessage: Message,
+		message?: string,
+	): Promise<void> => {
+		sqsProvider.deleteMessage({
+			queueUrl: queueUrl,
+			receiptHandle: queueMessage.ReceiptHandle,
+		});
+		message && process.stdout.write(message);
 	},
 };

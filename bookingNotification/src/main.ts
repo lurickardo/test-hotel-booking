@@ -2,6 +2,7 @@ import { SQS } from "@aws-sdk/client-sqs";
 import { queues } from "./app.module";
 import { typeormDataSource } from "./database";
 import { env } from "./config";
+import { generatePDF } from "./lib/generatePDF.lib";
 
 async function bootstrap(sqs: SQS): Promise<void> {
 	try {

@@ -1,5 +1,5 @@
 type Env = {
-	app: { amqpUrl: string; environment: string };
+	app: { environment: string; delay: number };
 	db: { name: "mongodb"; url: string };
 	providers: {
 		aws: {
@@ -9,15 +9,23 @@ type Env = {
 			sqs: {
 				urlQueues: {
 					bookings: string;
+					bookingNotifications: string;
 				};
 			};
 		};
+	};
+	templateEmails: {
+		bookingSuccess: string;
+		balanceInsufficient: string;
+		roomConflict: string;
+		customerNotFound: string;
 	};
 };
 
 export const env = Object.freeze({
 	app: {
 		environment: process.env.APP_ENVIRONMENT,
+		delay: Number.parseInt(process.env.APP_DELAY) || 3000,
 	},
 	db: {
 		name: process.env.DB_NAME,
@@ -31,8 +39,15 @@ export const env = Object.freeze({
 			sqs: {
 				urlQueues: {
 					bookings: process.env.SQS_QUEUE_BOOKINGS,
+					bookingNotifications: process.env.SQS_QUEUE_BOOKING_NOTIFICATIONS,
 				},
 			},
 		},
+	},
+	templateEmails: {
+		bookingSuccess: process.env.TEMPLATE_EMAIL_BOOKING_SUCCESS,
+		balanceInsufficient: process.env.TEMPLATE_EMAIL_BALANCE_INSUFFICIENT,
+		roomConflict: process.env.TEMPLATE_EMAIL_ROOM_CONFLICT,
+		customerNotFound: process.env.TEMPLATE_EMAIL_CUSTOMER_NOT_FOUND,
 	},
 } as Env);

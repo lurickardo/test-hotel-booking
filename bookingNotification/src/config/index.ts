@@ -1,7 +1,7 @@
 import * as application from "../../package.json";
 
 type Env = {
-	app: { port: number; environment: string };
+	app: { environment: string; delay: number };
 	plugins: { swagger: { basePath: string } };
 	stripPrefix: { path: string };
 	db: { name: "mongodb"; url: string };
@@ -10,20 +10,19 @@ type Env = {
 			region: string;
 			accessKeyId: string;
 			secretAccessKey: string;
-			s3: {
-				paymentVoucher: {
-					bucket: string;
-					folder: string;
-				};
-			};
 			sqs: {
 				urlQueues: {
-					bookingNotifications: string;
+					notifications: string;
+					paymentVouchers: string;
 				};
 			};
 			ses: {
-				templates: {
-					bookingAproved: string;
+				fromEmailAddress: string;
+			};
+			s3: {
+				bookingInfo: {
+					bucket: string;
+					folder: string;
 				};
 			};
 		};
@@ -32,8 +31,8 @@ type Env = {
 
 export const env = Object.freeze({
 	app: {
-		port: Number(process.env.PORT),
 		environment: process.env.APP_ENVIRONMENT,
+		delay: Number.parseInt(process.env.APP_DELAY) || 3000,
 	},
 	plugins: {
 		swagger: {
@@ -54,20 +53,19 @@ export const env = Object.freeze({
 			region: process.env.AWS_REGION,
 			accessKeyId: process.env.AWS_ACCESS_KEY_ID,
 			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-			s3: {
-				paymentVoucher: {
-					bucket: process.env.S3_BUCKET_PAYMENT_VOUCHER,
-					folder: process.env.S3_FOLDER_PAYMENT_VOUCHER,
-				},
-			},
 			sqs: {
 				urlQueues: {
-					bookingNotifications: process.env.SQS_QUEUE_BOOKING_NOTIFICATIONS,
+					notifications: process.env.SQS_QUEUE_BOOKING_NOTIFICATIONS,
+					paymentVouchers: process.env.SQS_QUEUE_PAYMENT_VOUCHERS,
 				},
 			},
 			ses: {
-				templates: {
-					bookingAproved: process.env.SES_TEMPLATE_BOOKING_APROVED,
+				fromEmailAddress: process.env.SES_FROM_EMAIL_ADDRESS,
+			},
+			s3: {
+				bookingInfo: {
+					bucket: process.env.S3_BUCKET_BOOKING_INFO,
+					folder: process.env.S3_FOLDER_BOOKING_INFO,
 				},
 			},
 		},

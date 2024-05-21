@@ -1,6 +1,6 @@
 export const PaymentMethod = {
 	PIX: "PIX",
-	BOLETO: "BOLETO",
+	BILL: "BILL",
 	BALANCE: "BALANCE",
 } as const;
 
