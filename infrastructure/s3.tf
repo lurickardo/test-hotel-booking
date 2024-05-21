@@ -8,6 +8,25 @@ module "s3_bucket" {
 
   tags = local.tags
 
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::hursthotel/bookingsinfo/*"
+    }
+  ]
+}
+POLICY
+
   lifecycle_rule = [
     {
       id      = "standard-ia-rule"
