@@ -19,8 +19,8 @@
 Hotel Booking is a microservices system designed to book a stay at a hotel.
 
 ## Diagram
-![image](https://github.com/lurickardo/test-hotel-booking/assets/34722198/cd03633d-59d7-47ea-af97-4c382b372159)
-
+<a href="https://miro.com/app/board/uXjVKGOoZpw=/?share_link_id=530227404362">Diagram Link</a>
+<a href="https://miro.com/app/board/uXjVKGOoZpw=/?share_link_id=530227404362" target="_blank"><img src="https://github.com/lurickardo/test-hotel-booking/assets/34722198/8e3df416-ce78-43b7-9dcb-c09332459890" alt="Flow" /></a>
 <img src="https://github.com/lurickardo/test-hotel-booking/assets/34722198/a5205ab2-3411-49c2-b94c-68652c886407" alt="Bonus" width="300">
 
 ## Installation
@@ -44,3 +44,7 @@ $ npm run start:prod
 ## Swagger
 
 `http://localhost:PORT/api/SERVICENAME/docs`
+
+## Postman
+
+Add the file `Hurst Hoteis.postman_collection.json` to your postman to get all the application routes
