@@ -21,7 +21,7 @@ module "s3_bucket" {
       "Effect": "Allow",
       "Principal": "*",
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::hursthotel/bookingsinfo/*"
+      "Resource": "arn:aws:s3:::hursthotel/bookingsInfo/*"
     }
   ]
 }
