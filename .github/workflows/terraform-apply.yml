@@ -3,7 +3,7 @@ name: Terraform apply infrastructure
 on:
   push:
     branches:
-      - develop
+      - main
     paths:
       - "**.tf"
       - "**.yml"
