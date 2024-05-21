@@ -1,0 +1,30 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.7.3/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"suspicious": {
+				"noExplicitAny": "off",
+				"noGlobalIsNan": "off"
+			},
+			"complexity": {
+				"noForEach": "off",
+				"noUselessCatch": "off"
+			}
+		}
+	},
+	"files": {
+		"ignore": [
+			"node_modules/",
+			"coverage/",
+			"dist/",
+			"package-lock.json",
+			"README.md",
+			"LICENS"
+		]
+	}
+}
