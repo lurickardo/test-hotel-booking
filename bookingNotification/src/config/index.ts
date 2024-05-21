@@ -13,7 +13,6 @@ type Env = {
 			sqs: {
 				urlQueues: {
 					notifications: string;
-					paymentVouchers: string;
 				};
 			};
 			ses: {
@@ -56,7 +55,6 @@ export const env = Object.freeze({
 			sqs: {
 				urlQueues: {
 					notifications: process.env.SQS_QUEUE_BOOKING_NOTIFICATIONS,
-					paymentVouchers: process.env.SQS_QUEUE_PAYMENT_VOUCHERS,
 				},
 			},
 			ses: {

@@ -17,11 +17,42 @@ const createBookingBalance = async (
 	customer: Customer,
 	message: Message,
 ) => {
-	const newBalance = Number(
-		(customer?.balance - createBookingDto.vlBooking).toFixed(6),
-	);
+	try {
+		const newBalance = Number(
+			(customer?.balance - createBookingDto.vlBooking).toFixed(6),
+		);
 
-	if (newBalance < 0) {
+		if (newBalance < 0) {
+			await sqsProvider.publish({
+				queueUrl: env.providers.aws.sqs.urlQueues.bookingNotifications,
+				queueType: "fifo",
+				messageBody: JSON.stringify({
+					recipients: [createBookingDto.customerEmail],
+					content: {
+						customerName: createBookingDto.customerName,
+					},
+					templateId: env.templateEmails.balanceInsufficient,
+				}),
+			});
+			utils.clearQueue(
+				env.providers.aws.sqs.urlQueues.bookings,
+				message,
+				`\n\x1b[31m Booking ID:${message.MessageId} - customer: ${createBookingDto.customerName} the balance is insufficient.\x1b[0m\n`,
+			);
+			return;
+		}
+
+		const [booking] = await Promise.all([
+			bookingRepository.create({
+				...createBookingDto,
+				status: "CONCLUDED",
+			}),
+			customerRepository.update(customer, {
+				balance: newBalance,
+				version: customer.version + 1,
+			}),
+		]);
+
 		await sqsProvider.publish({
 			queueUrl: env.providers.aws.sqs.urlQueues.bookingNotifications,
 			queueType: "fifo",
@@ -30,43 +61,21 @@ const createBookingBalance = async (
 				content: {
 					customerName: createBookingDto.customerName,
 				},
-				templateId: env.templateEmails.balanceInsufficient,
+				templateId: env.templateEmails.bookingSuccess,
+				idBooking: booking._id,
 			}),
 		});
 		utils.clearQueue(
 			env.providers.aws.sqs.urlQueues.bookings,
 			message,
-			`\n\x1b[31m Booking ID:${message.MessageId} - customer: ${createBookingDto.customerName} the balance is insufficient.\x1b[0m\n`,
+			`\n\x1b[32m Booking with balance ID:${message.MessageId} done.\x1b[0m\n`,
 		);
 		return;
+	} catch (error) {
+		if (error.name === "OptimisticLockVersionMismatchError") {
+			return process.stdout.write(`Optimistic lock error: ${error.message}`);
+		}
 	}
-
-	const [booking] = await Promise.all([
-		bookingRepository.create({
-			...createBookingDto,
-			status: "CONCLUDED",
-		}),
-		customerRepository.update(customer, { balance: newBalance }),
-	]);
-
-	await sqsProvider.publish({
-		queueUrl: env.providers.aws.sqs.urlQueues.bookingNotifications,
-		queueType: "fifo",
-		messageBody: JSON.stringify({
-			recipients: [createBookingDto.customerEmail],
-			content: {
-				customerName: createBookingDto.customerName,
-			},
-			templateId: env.templateEmails.bookingSuccess,
-			idBooking: booking._id,
-		}),
-	});
-	utils.clearQueue(
-		env.providers.aws.sqs.urlQueues.bookings,
-		message,
-		`\n\x1b[32m Booking with balance ID:${message.MessageId} done.\x1b[0m\n`,
-	);
-	return;
 };
 
 const isConflict = async (

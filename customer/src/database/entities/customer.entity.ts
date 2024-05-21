@@ -1,5 +1,5 @@
 import type { ObjectId } from "mongodb";
-import { Entity, Column, ObjectIdColumn } from "typeorm";
+import { Entity, Column, ObjectIdColumn, VersionColumn } from "typeorm";
 
 @Entity("customers")
 export class Customer {
@@ -17,4 +17,7 @@ export class Customer {
 
 	@Column({ type: "decimal", nullable: false, default: 0 })
 	balance: number;
+
+	@VersionColumn()
+	version: number;
 }

@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { exception } from "./error";
-import { Message } from "@aws-sdk/client-sqs";
+import type { Message } from "@aws-sdk/client-sqs";
 import { sqsProvider } from "../provider/sqs.provider";
 
 export const utils = {

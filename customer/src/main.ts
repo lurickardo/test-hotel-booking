@@ -1,4 +1,4 @@
-import fastify, { FastifyInstance } from "fastify";
+import fastify, { type FastifyInstance } from "fastify";
 import { routes } from "./app.module";
 import { env } from "./config";
 import { errorHandler } from "./config/error";
