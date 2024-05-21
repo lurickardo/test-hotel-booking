@@ -11,4 +11,7 @@ export const bookingRepository = {
 	findOneBy: async (criteria: FindOptionsWhere<Booking>) => {
 		return await repository.findOneBy(criteria);
 	},
+	update: async (existing: Booking, updated: Partial<Booking>) => {
+		return await repository.save({ ...existing, ...updated });
+	},
 };

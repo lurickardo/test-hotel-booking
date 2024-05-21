@@ -39,11 +39,15 @@ export const paymentService = {
 				folder: env.providers.aws.s3.paymentVoucher.folder,
 			});
 
-			const paymentVoucher: PaymentVoucher =
-				await paymentVoucherRepository.create({
+			const [paymentVoucher] = await Promise.all([
+				paymentVoucherRepository.create({
 					idBooking: booking._id,
 					fileUrl: paymentVoucherUploaded.Location,
-				});
+				}),
+				bookingRepository.update(booking, {
+					status: "CONCLUDED",
+				}),
+			]);
 
 			await sqsProvider.publish({
 				queueUrl: env.providers.aws.sqs.urlQueues.bookingNotifications,
