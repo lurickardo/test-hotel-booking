@@ -1,10 +1,10 @@
 import Handlebars from "handlebars";
 import { generatePDF } from "../../../../lib/generatePDF.lib";
 import { utils } from "../../../../config/utils";
-import { Booking } from "../../../../database/entities/booking.entity";
+import type { Booking } from "../../../../database/entities/booking.entity";
 import { bookingRepository } from "../../../../database/repositories/booking.repository";
-import { Message } from "@aws-sdk/client-sqs";
-import { SendNotificationDto } from "../dto";
+import type { Message } from "@aws-sdk/client-sqs";
+import type { SendNotificationDto } from "../dto";
 import { s3Provider } from "../../../../provider/s3.provider";
 import { randomUUID } from "node:crypto";
 import { bookingInfoRepository } from "../../../../database/repositories/bookingInfo.repository";
@@ -43,7 +43,7 @@ export const bookingApproved = async (
 		folder,
 	});
 
-	const [templateNotification] = await Promise.all([
+	const [templateNotification, bookingInfo] = await Promise.all([
 		await templateNotificationRepository.findOneBy({
 			_id: utils.convertToObjectId(sendNotificationDto.templateId),
 		}),
@@ -57,6 +57,7 @@ export const bookingApproved = async (
 	const contentMessage = {
 		customerName: booking.customerName,
 		fileUrl: bookingInfoUploaded.Location,
+		codeBookingInfo: bookingInfo.codeBookingInfo,
 	};
 
 	const template = Handlebars.compile(templateNotification.message);
