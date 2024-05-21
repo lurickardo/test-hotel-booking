@@ -1,13 +1,15 @@
 import {
-	DeepPartial,
-	FindOptionsWhere,
-	Repository,
+	type DeepPartial,
+	type FindOptionsWhere,
+	type Repository,
 	getRepository,
 } from "typeorm";
 import { typeormDataSource } from "../../../database";
-import { Customer } from "../../../database/entities/customer.entity";
+import type { Customer } from "../../../database/entities/customer.entity";
 
-const repository = typeormDataSource.getRepository("Customer") as Repository<Customer>;
+const repository = typeormDataSource.getRepository(
+	"Customer",
+) as Repository<Customer>;
 
 export const customerRepository = {
 	getRepository: repository,
@@ -19,6 +21,6 @@ export const customerRepository = {
 		return await repository.findOneBy(criteria);
 	},
 	update: async (existing: Customer, updated: Partial<Customer>) => {
-		return await repository.save({...existing, ...updated});
+		return await repository.save({ ...existing, ...updated });
 	},
 };
