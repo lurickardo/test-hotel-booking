@@ -1,0 +1,300 @@
+{
+        "info": {
+                "_postman_id": "e1c2794a-2267-4460-9b9b-5f8973dbb0ae",
+                "name": "Hurst Hoteis",
+                "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+                "_exporter_id": "8202138"
+        },
+        "item": [
+                {
+                        "name": "paymentVoucherUpload",
+                        "protocolProfileBehavior": {
+                                "disabledSystemHeaders": {}
+                        },
+                        "request": {
+                                "method": "POST",
+                                "header": [
+                                        {
+                                                "key": "accept",
+                                                "value": "application/json",
+                                                "disabled": true
+                                        },
+                                        {
+                                                "key": "Content-Type",
+                                                "value": "multipart/form-data",
+                                                "type": "text",
+                                                "disabled": true
+                                        }
+                                ],
+                                "body": {
+                                        "mode": "formdata",
+                                        "formdata": [
+                                                {
+                                                        "key": "paymentVoucher",
+                                                        "type": "file",
+                                                        "src": "/home/atenas/Downloads/a9e5354c363a4383b9a4b64bdd5f2ed8.pdf"
+                                                }
+                                        ]
+                                },
+                                "url": {
+                                        "raw": "http://localhost:3000/api/paymentvoucher/v1/payment/664ccf9a2141a96b733bb295/voucher/upload",
+                                        "protocol": "http",
+                                        "host": [
+                                                "localhost"
+                                        ],
+                                        "port": "3000",
+                                        "path": [
+                                                "api",
+                                                "paymentvoucher",
+                                                "v1",
+                                                "payment",
+                                                "664ccf9a2141a96b733bb295",
+                                                "voucher",
+                                                "upload"
+                                        ]
+                                }
+                        },
+                        "response": []
+                },
+                {
+                        "name": "getBookingInfo",
+                        "request": {
+                                "method": "GET",
+                                "header": [
+                                        {
+                                                "key": "accept",
+                                                "value": "application/json"
+                                        }
+                                ],
+                                "url": {
+                                        "raw": "http://localhost:3001/api/bookinginfo/v1/bookingInfo/64efb4bb",
+                                        "protocol": "http",
+                                        "host": [
+                                                "localhost"
+                                        ],
+                                        "port": "3001",
+                                        "path": [
+                                                "api",
+                                                "bookinginfo",
+                                                "v1",
+                                                "bookingInfo",
+                                                "64efb4bb"
+                                        ]
+                                }
+                        },
+                        "response": []
+                },
+                {
+                        "name": "createCustomer",
+                        "request": {
+                                "method": "POST",
+                                "header": [
+                                        {
+                                                "key": "accept",
+                                                "value": "application/json"
+                                        },
+                                        {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                        }
+                                ],
+                                "body": {
+                                        "mode": "raw",
+                                        "raw": "{\n  \"name\": \"Luiz Ricardo\",\n  \"email\": \"luizr726@gmail.com\",\n  \"password\": \"Luiz@1234567\"\n}"
+                                },
+                                "url": {
+                                        "raw": "http://localhost:3003/api/customer/v1/customer",
+                                        "protocol": "http",
+                                        "host": [
+                                                "localhost"
+                                        ],
+                                        "port": "3003",
+                                        "path": [
+                                                "api",
+                                                "customer",
+                                                "v1",
+                                                "customer"
+                                        ]
+                                }
+                        },
+                        "response": []
+                },
+                {
+                        "name": "addBalance",
+                        "request": {
+                                "method": "POST",
+                                "header": [
+                                        {
+                                                "key": "accept",
+                                                "value": "application/json"
+                                        },
+                                        {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                        }
+                                ],
+                                "body": {
+                                        "mode": "raw",
+                                        "raw": "{\n  \"amount\": 1000\n}"
+                                },
+                                "url": {
+                                        "raw": "http://localhost:3003/api/customer/v1/customer/luizr726@gmail.com/balance",
+                                        "protocol": "http",
+                                        "host": [
+                                                "localhost"
+                                        ],
+                                        "port": "3003",
+                                        "path": [
+                                                "api",
+                                                "customer",
+                                                "v1",
+                                                "customer",
+                                                "luizr726@gmail.com",
+                                                "balance"
+                                        ]
+                                }
+                        },
+                        "response": []
+                },
+                {
+                        "name": "publish Booker with pix",
+                        "request": {
+                                "method": "POST",
+                                "header": [
+                                        {
+                                                "key": "accept",
+                                                "value": "application/json"
+                                        },
+                                        {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                        }
+                                ],
+                                "body": {
+                                        "mode": "raw",
+                                        "raw": "{\n  \"customerEmail\": \"luizr726@gmail.com\",\n  \"customerName\": \"luiz ricardo\",\n  \"vlBooking\": 100.00,\n  \"dtCheckIn\": \"2024-06-01T00:00:00.000Z\",\n  \"dtCheckOut\": \"2024-06-07T00:00:00.000Z\",\n  \"room\": 100,\n  \"paymentMethod\": \"PIX\"\n}"
+                                },
+                                "url": {
+                                        "raw": "http://localhost:3004/api/booker/v1/booking",
+                                        "protocol": "http",
+                                        "host": [
+                                                "localhost"
+                                        ],
+                                        "port": "3004",
+                                        "path": [
+                                                "api",
+                                                "booker",
+                                                "v1",
+                                                "booking"
+                                        ]
+                                }
+                        },
+                        "response": []
+                },
+                {
+                        "name": "publish Booker with pix conflict",
+                        "request": {
+                                "method": "POST",
+                                "header": [
+                                        {
+                                                "key": "accept",
+                                                "value": "application/json"
+                                        },
+                                        {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                        }
+                                ],
+                                "body": {
+                                        "mode": "raw",
+                                        "raw": "{\n  \"customerEmail\": \"luizr726@gmail.com\",\n  \"customerName\": \"luiz ricardo\",\n  \"vlBooking\": 100.00,\n  \"dtCheckIn\": \"2024-05-25T00:00:00.000Z\",\n  \"dtCheckOut\": \"2024-06-07T00:00:00.000Z\",\n  \"room\": 100,\n  \"paymentMethod\": \"PIX\"\n}"
+                                },
+                                "url": {
+                                        "raw": "http://localhost:3004/api/booker/v1/booking",
+                                        "protocol": "http",
+                                        "host": [
+                                                "localhost"
+                                        ],
+                                        "port": "3004",
+                                        "path": [
+                                                "api",
+                                                "booker",
+                                                "v1",
+                                                "booking"
+                                        ]
+                                }
+                        },
+                        "response": []
+                },
+                {
+                        "name": "publish Booker without balance sufficient",
+                        "request": {
+                                "method": "POST",
+                                "header": [
+                                        {
+                                                "key": "accept",
+                                                "value": "application/json"
+                                        },
+                                        {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                        }
+                                ],
+                                "body": {
+                                        "mode": "raw",
+                                        "raw": "{\n  \"customerEmail\": \"luizr726@gmail.com\",\n  \"customerName\": \"luiz ricardo\",\n  \"vlBooking\": 10000.00,\n  \"dtCheckIn\": \"2024-10-25T00:00:00.000Z\",\n  \"dtCheckOut\": \"2024-11-07T00:00:00.000Z\",\n  \"room\": 50,\n  \"paymentMethod\": \"BALANCE\"\n}"
+                                },
+                                "url": {
+                                        "raw": "http://localhost:3004/api/booker/v1/booking",
+                                        "protocol": "http",
+                                        "host": [
+                                                "localhost"
+                                        ],
+                                        "port": "3004",
+                                        "path": [
+                                                "api",
+                                                "booker",
+                                                "v1",
+                                                "booking"
+                                        ]
+                                }
+                        },
+                        "response": []
+                },
+                {
+                        "name": "publish Booker with balance",
+                        "request": {
+                                "method": "POST",
+                                "header": [
+                                        {
+                                                "key": "accept",
+                                                "value": "application/json"
+                                        },
+                                        {
+                                                "key": "Content-Type",
+                                                "value": "application/json"
+                                        }
+                                ],
+                                "body": {
+                                        "mode": "raw",
+                                        "raw": "{\n  \"customerEmail\": \"luizr726@gmail.com\",\n  \"customerName\": \"luiz ricardo\",\n  \"vlBooking\": 100.00,\n  \"dtCheckIn\": \"2024-06-01T00:00:00.000Z\",\n  \"dtCheckOut\": \"2024-06-06T00:00:00.000Z\",\n  \"room\": 10,\n  \"paymentMethod\": \"BALANCE\"\n}"
+                                },
+                                "url": {
+                                        "raw": "http://localhost:3004/api/booker/v1/booking",
+                                        "protocol": "http",
+                                        "host": [
+                                                "localhost"
+                                        ],
+                                        "port": "3004",
+                                        "path": [
+                                                "api",
+                                                "booker",
+                                                "v1",
+                                                "booking"
+                                        ]
+                                }
+                        },
+                        "response": []
+                }
+        ]
+}
