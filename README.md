@@ -1,7 +1,4 @@
-# <p align="center">Hurst Hotel</p>
-<p align="center">
-  <img src="https://github.com/lurickardo/test-hotel-booking/assets/34722198/58dab62b-951c-48f0-82a4-d9c1f0574e13" alt="Logo" width="300">
-</p>
+# <p align="center">Hotel booking</p>
 <p align="center">Microservices Flow for Hotel Reservations in <a href="https://nodejs.org" target="_blank">Node.js</a> using Fastify.</p>
 <p align="center">
   <a><img src="https://img.shields.io/badge/license-MIT-green" alt="Package License" /></a>
@@ -51,4 +48,4 @@ $ npm run start:prod
 
 ## Postman
 
-Add the file `Hurst Hoteis.postman_collection.json` to your postman to get all the application routes
+Add the file `postman_collection.json` to your postman to get all the application routes
